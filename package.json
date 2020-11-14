@@ -1,0 +1,25 @@
+{
+  "name": "bilanzenersteller",
+  "version": "1.0.0",
+  "description": "A tool used to create balance sheets",
+  "main": "main.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "start": "npm run build && electron ./dist/main.js"
+  },
+  "author": "Angelo Breuer",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/halfmoon": "^1.0.0",
+    "copyfiles": "^2.4.0",
+    "electron": "^10.1.5",
+    "i": "^0.3.6",
+    "npm": "^6.14.8"
+  },
+  "dependencies": {
+    "electron-print-dialog": "0.1.0-alpha.1",
+    "halfmoon": "^1.1.1",
+    "print-html-element": "^0.5.1"
+  }
+}

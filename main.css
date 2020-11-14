@@ -1,0 +1,68 @@
+@media print {
+  .non-printable {
+    display: none;
+  }
+}
+
+.sticky-dark-toggler {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  background: rgb(1, 68, 255);
+  border-radius: 15px;
+  padding: 2px;
+  z-index: 999;
+  color: white;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.print-button {
+  position: fixed;
+  top: 10px;
+  right: 50px;
+  width: 30px;
+  height: 30px;
+  background: rgb(1, 68, 255);
+  border-radius: 15px;
+  padding: 2px;
+  z-index: 999;
+  color: white;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+#balance-output table,
+#balance-output {
+  width: 100%;
+}
+
+#balance-output table td.spacer {
+  width: 70px !important;
+}
+
+#balance-output table tr:first-child,
+#balance-output table tr:last-child {
+  border-top: 2px solid var(--dark-color);
+}
+
+#balance-output table td {
+  padding: 4px 9px;
+  border: 1px solid #cacaca;
+  border-collapse: collapse;
+  width: 20px;
+}
+
+.dark-mode #balance-output table tr:first-child,
+.dark-mode #balance-output table tr:last-child,
+.dark-mode #balance-output table td.balance-line {
+  border-color: #ffffff;
+  stroke: #ffffff;
+}
+
+#balance-output table td.balance-line {
+  border: none;
+  border-left: 2px solid var(--dark-color);
+}
