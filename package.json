@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "start": "npm run build && electron ./dist/main.js"
+    "start": "npm run build && cd dist && electron main.js"
   },
   "author": "Angelo Breuer",
   "license": "MIT",
@@ -14,12 +14,14 @@
     "@types/halfmoon": "^1.0.0",
     "copyfiles": "^2.4.0",
     "electron": "^10.1.5",
+    "electron-packager": "^15.1.0",
     "i": "^0.3.6",
-    "npm": "^6.14.8"
+    "npm": "^7.0.11"
   },
   "dependencies": {
     "electron-print-dialog": "0.1.0-alpha.1",
     "halfmoon": "^1.1.1",
+    "open": "^7.3.0",
     "print-html-element": "^0.5.1"
   }
 }

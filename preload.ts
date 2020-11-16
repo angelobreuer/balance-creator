@@ -1,9 +1,10 @@
-import { BrowserWindow } from "electron/main";
+import { addSidebarPage } from "./pages/navigator";
+import { pages } from "./pages/pages";
 
 // Include CSS file
 var halfmoon = require("halfmoon");
 
 window.addEventListener("DOMContentLoaded", () => {
   halfmoon.onDOMContentLoaded();
-  halfmoon.toggleDarkMode();
+  pages.forEach(addSidebarPage);
 });
