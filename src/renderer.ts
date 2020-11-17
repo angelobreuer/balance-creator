@@ -5,7 +5,7 @@ import { storage, updateData } from "./storage";
 import { pages } from "./pages/pages";
 import { PostsPage } from "./pages/postsPage";
 import { askToDiscardChanges, notifySave } from "./util/changesHelper";
-import exportSheet from "./util/exportHelper";
+import exportHTML, { defaultExportOptions } from "./util/exportHelper";
 import "@fortawesome/fontawesome-free/js/fontawesome";
 import "@fortawesome/fontawesome-free/js/solid";
 
@@ -70,7 +70,7 @@ document.getElementById("save-button").addEventListener("click", function () {
 });
 
 document.getElementById("export-button").addEventListener("click", function () {
-  exportSheet();
+  exportHTML(defaultExportOptions);
 });
 
 document.getElementById("open-button").addEventListener("click", function () {

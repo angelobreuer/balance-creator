@@ -5,6 +5,7 @@ import { BookingsPage } from "./bookingsPage";
 import { OpeningBalancePage } from "./openingBalancePage";
 import { StocksPage } from "./stocksPage";
 import { PostsPage } from "./postsPage";
+import { ExportPage } from "./exportPage";
 
 export const pages: Page[] = [
   PostsPage,
@@ -13,4 +14,5 @@ export const pages: Page[] = [
   BookingsPage,
   AccountsPage,
   ClosingBalancePage,
+  ExportPage,
 ];
