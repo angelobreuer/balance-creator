@@ -39,6 +39,21 @@ document.getElementById("print-button").addEventListener("click", function () {
   printer.printElement(document.getElementById("content-wrapper"));
 });
 
+document.getElementById("new-button").addEventListener("click", function () {
+  const shouldDiscard = askToDiscardChanges(
+    "Ungespeicherte Änderungen",
+    "Es sind ungespeicherte Änderungen vorhanden. Wenn Sie eine neue Datei erstellen, gehen aktuelle Änderungen verloren.",
+    "Weiter"
+  );
+
+  if (!shouldDiscard) {
+    return;
+  }
+
+  updateData({ items: [], sheet: { entries: [], stocks: [] } });
+  showPage(PostsPage);
+});
+
 document.getElementById("save-button").addEventListener("click", function () {
   const result = remote.dialog.showSaveDialogSync(focusedWindow, {
     filters: [{ extensions: ["bew"], name: "BEW-Dateien" }],
