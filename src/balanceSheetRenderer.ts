@@ -21,6 +21,10 @@ export function renderBalance(
   const passive: BalanceStock<BalanceItem>[] = [];
 
   accounts.forEach((x) => {
+    if (x.value === 0) {
+      return;
+    }
+
     if (x.item.category !== "passive") {
       active.push(x);
     } else {
