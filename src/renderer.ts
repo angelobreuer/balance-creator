@@ -6,13 +6,24 @@ import { pages } from "./pages/pages";
 import { PostsPage } from "./pages/postsPage";
 import { askToDiscardChanges, notifySave } from "./util/changesHelper";
 import exportSheet from "./util/exportHelper";
-
 import "@fortawesome/fontawesome-free/js/fontawesome";
 import "@fortawesome/fontawesome-free/js/solid";
 
 var halfmoon = require("halfmoon");
 
 const focusedWindow = remote.BrowserWindow.getFocusedWindow();
+
+window.addEventListener("beforeunload", (e) => {
+  const shouldDiscard = askToDiscardChanges(
+    "Ungespeicherte Änderungen",
+    "Es sind ungespeicherte Änderungen vorhanden. Wenn Sie das Program schließen gehen diese verloren.",
+    "Verlassen"
+  );
+
+  if (shouldDiscard) {
+    e.preventDefault();
+  }
+});
 
 halfmoon.onDOMContentLoaded();
 pages.forEach(addSidebarPage);
@@ -47,13 +58,13 @@ document.getElementById("export-button").addEventListener("click", function () {
 });
 
 document.getElementById("open-button").addEventListener("click", function () {
-  if (
-    !askToDiscardChanges(
-      "Ungespeicherte Änderungen",
-      "Wenn Sie ein neues Dokument öffnen, gehen ungespeicherte Änderungen verloren. Wollen Sie wirklich fortfahren?",
-      "Fortfahren"
-    )
-  ) {
+  const allowDiscard = askToDiscardChanges(
+    "Ungespeicherte Änderungen",
+    "Wenn Sie ein neues Dokument öffnen, gehen ungespeicherte Änderungen verloren. Wollen Sie wirklich fortfahren?",
+    "Fortfahren"
+  );
+
+  if (!allowDiscard) {
     return;
   }
 

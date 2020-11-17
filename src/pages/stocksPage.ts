@@ -112,10 +112,11 @@ export const StocksPage: Page = {
 
 function render(stock: BalanceStock, index: number) {
   const row = document.createElement("tr");
+  const item = resolveRef(stock.item);
 
   const name = document.createElement("td");
   row.appendChild(name);
-  name.innerText = stock.item.ref;
+  name.innerText = item.name;
 
   const value = document.createElement("td");
   row.appendChild(value);

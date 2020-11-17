@@ -1,4 +1,4 @@
-import { storage, Storage } from "./storage";
+import { storage } from "./storage";
 
 export interface BalanceSheet {
   entries: BalanceSheetEntry[];
@@ -10,8 +10,10 @@ export interface BalanceStock<T = BalanceItemRef> {
   value: number;
 }
 
+export type BalanceItemId = "sbk" | string | "sum";
+
 export class BalanceItemRef {
-  readonly ref: string;
+  readonly id: BalanceItemId;
 }
 
 export interface BalanceSheetEntry {
@@ -33,6 +35,7 @@ export interface ClosedBalanceAccount extends BalanceAccount {
 export interface BalanceItem {
   name: string;
   category: BalanceItemCategory;
+  id: BalanceItemId;
 }
 
 export type BalanceItemCategory = "fixed-assets" | "current-assets" | "passive";
@@ -42,9 +45,11 @@ export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
 
   // start with adding the stocks to the accounts
   sheet.stocks.forEach((stock) => {
-    accounts[stock.item.ref] = {
-      entries: { AB: { item: resolveRef(stock.item), value: stock.value } },
-      item: resolveRef(stock.item),
+    const item = resolveRef(stock.item);
+
+    accounts[item.name] = {
+      entries: { AB: { item, value: stock.value } },
+      item: item,
     };
   });
 
@@ -57,17 +62,16 @@ export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
     const entryName = index + 1 + ")";
 
     x.debit.concat(x.credit).forEach((x) => {
-      if (!accounts[x.item.ref]) {
-        accounts[x.item.ref] = {
+      const item = resolveRef(x.item);
+
+      if (!accounts[item.name]) {
+        accounts[item.name] = {
           item: resolveRef(x.item),
-          entries: { AB: { item: resolveRef(x.item), value: 0 } },
+          entries: { AB: { item, value: 0 } },
         };
       }
 
-      accounts[x.item.ref].entries[entryName] = {
-        item: resolveRef(x.item),
-        value: x.value,
-      };
+      accounts[item.name].entries[entryName] = { item, value: x.value };
     });
   });
 
@@ -91,7 +95,7 @@ export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
       left > right ? "passive" : "fixed-assets";
 
     const closingBalance = (x.entries["SBK"] = {
-      item: { name: "SBK", category: category },
+      item: { name: "SBK", category: category, id: "sbk" },
       value: difference,
     });
 
@@ -100,9 +104,9 @@ export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
 }
 
 export function resolveRef(ref: BalanceItemRef): BalanceItem | undefined {
-  return storage.items.find((x) => x.name === ref.ref);
+  return storage.items.find((x) => x.id === ref.id);
 }
 
 export function createItemRef(item: BalanceItem): BalanceItemRef {
-  return { ref: item.name };
+  return { id: item.id };
 }

@@ -6,8 +6,13 @@ import Page from "./page";
 import createButton from "../util/buttonHelper";
 import { notifyChange } from "../util/changesHelper";
 import createSelect, { Option } from "../util/selectHelper";
+import guid from "../util/guidHelper";
 
-const modalItem: BalanceItem = { category: "fixed-assets", name: "" };
+const modalItem: BalanceItem = {
+  category: "fixed-assets",
+  name: "",
+  id: guid(),
+};
 
 export const PostsPage: Page = {
   title: "Postenverwaltung",
@@ -33,6 +38,7 @@ export const PostsPage: Page = {
         // reset item data
         modalItem.category = "fixed-assets";
         modalItem.name = "";
+        modalItem.id = guid();
 
         notifyChange();
 

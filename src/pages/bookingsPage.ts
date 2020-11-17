@@ -1,4 +1,4 @@
-import { BalanceSheetEntry } from "../balanceSheet";
+import { BalanceSheetEntry, resolveRef } from "../balanceSheet";
 import formatCurrency from "../util/currencyHelper";
 import { storage } from "../storage";
 import Page from "./page";
@@ -77,14 +77,20 @@ function createBooking(
 
     if (index < booking.debit.length) {
       const info = booking.debit[index];
-      debitCell.innerText = `${info.item.ref} ${formatCurrency(info.value)}`;
       debitCell.className = "booking-info";
+
+      debitCell.innerText = `${resolveRef(info.item).name} ${formatCurrency(
+        info.value
+      )}`;
     }
 
     if (index < booking.credit.length) {
       const info = booking.credit[index];
-      creditCell.innerText = `${info.item.ref} ${formatCurrency(info.value)}`;
       creditCell.className = "booking-info";
+
+      creditCell.innerText = `${resolveRef(info.item).name} ${formatCurrency(
+        info.value
+      )}`;
     }
 
     row.appendChild(debitCell);

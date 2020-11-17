@@ -129,7 +129,7 @@ function createCategory(name: string): HTMLElement {
   return column;
 }
 
-const sumItem: BalanceItem = { name: "", category: "fixed-assets" };
+const sumItem: BalanceItem = { name: "", category: "fixed-assets", id: "sum" };
 
 function closeTable(
   table: HTMLTableElement,

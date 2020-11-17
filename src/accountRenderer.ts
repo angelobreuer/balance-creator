@@ -65,7 +65,7 @@ function createEntry(
   return container;
 }
 
-const sumItem: BalanceItem = { name: "", category: "fixed-assets" };
+const sumItem: BalanceItem = { name: "", category: "fixed-assets", id: "sum" };
 
 function closeTable(
   table: HTMLTableElement,
