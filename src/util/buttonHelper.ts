@@ -2,12 +2,14 @@ export default function createButton(
   content: string | HTMLElement,
   style: string,
   href?: string,
-  callback?: (this: HTMLDivElement, ev: MouseEvent) => any
+  callback?: (this: HTMLDivElement, ev: MouseEvent) => any,
+  align: string = "right"
 ): HTMLDivElement {
   const buttonWrapper = document.createElement("div");
   const button = document.createElement("a");
 
-  buttonWrapper.className = "text-right";
+  buttonWrapper.className = "text-" + align;
+
   buttonWrapper.appendChild(button);
   button.className = "btn btn-" + style;
 
@@ -33,7 +35,8 @@ export function createIconButton(
   icon: string,
   style: string,
   href?: string,
-  callback?: (this: HTMLDivElement, ev: MouseEvent) => any
+  callback?: (this: HTMLDivElement, ev: MouseEvent) => any,
+  align: string = "right"
 ) {
   const wrapper = document.createElement("span");
   const textElement = document.createElement("span");
@@ -46,20 +49,22 @@ export function createIconButton(
   wrapper.appendChild(iconElement);
   wrapper.appendChild(textElement);
 
-  return createButton(wrapper, style, href, callback);
+  return createButton(wrapper, style, href, callback, align);
 }
 
 export function createDisabledButton(
   content: string | HTMLElement,
-  style?: string
+  style?: string,
+  align: string = "right"
 ): HTMLDivElement {
-  return createButton(content, "muted " + style);
+  return createButton(content, "muted " + style, align);
 }
 
 export function createDisabledIconButton(
   content: string,
   icon: string,
-  style?: string
+  style?: string,
+  align: string = "right"
 ): HTMLDivElement {
-  return createIconButton(content, icon, "muted " + style);
+  return createIconButton(content, icon, "muted " + style, align);
 }

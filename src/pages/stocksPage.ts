@@ -110,8 +110,8 @@ export const StocksPage: Page = {
     const select = createSelect(options);
 
     const button = createIconButton(
-      "plus",
       "Hinzufügen",
+      "plus",
       "primary mt-10",
       "#",
       () => {

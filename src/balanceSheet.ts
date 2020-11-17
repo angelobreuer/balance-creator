@@ -40,6 +40,41 @@ export interface BalanceItem {
 
 export type BalanceItemCategory = "fixed-assets" | "current-assets" | "passive";
 
+function computeSide(
+  category: BalanceItemCategory,
+  debit: boolean
+): BalanceItemCategory {
+  const isActiveAccount = category !== "passive";
+
+  if (isActiveAccount === debit) {
+    // book on the same account
+    return category;
+  }
+
+  return isActiveAccount ? "passive" : "fixed-assets";
+}
+
+function buildEntryName(
+  item: BalanceItem,
+  index: number,
+  debit: boolean,
+  entry: BalanceSheetEntry
+) {
+  const duplicate =
+    entry.debit.some((x) => x.item.id === item.id) &&
+    entry.credit.some((x) => x.item.id === item.id);
+
+  if (duplicate) {
+    if (debit) {
+      return `${index + 1}) (Im Soll)`;
+    } else {
+      return `${index + 1}) (Im Haben)`;
+    }
+  }
+
+  return `${index + 1})`;
+}
+
 export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
   const accounts: { [itemName: string]: BalanceAccount } = {};
 
@@ -54,24 +89,49 @@ export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
   });
 
   // add entries
-  sheet.entries.forEach((x, index) => {
-    if (x.ignore) {
+  sheet.entries.forEach((entry, index) => {
+    if (entry.ignore) {
       return;
     }
 
-    const entryName = index + 1 + ")";
-
-    x.debit.concat(x.credit).forEach((x) => {
-      const item = resolveRef(x.item);
+    entry.debit.forEach((stock) => {
+      const item = resolveRef(stock.item);
 
       if (!accounts[item.name]) {
         accounts[item.name] = {
-          item: resolveRef(x.item),
+          item: resolveRef(stock.item),
           entries: { AB: { item, value: 0 } },
         };
       }
 
-      accounts[item.name].entries[entryName] = { item, value: x.value };
+      const name = buildEntryName(item, index, true, entry);
+      const category = computeSide(item.category, true);
+      const polyItem = { id: name, name, category };
+
+      accounts[item.name].entries[name] = {
+        item: polyItem,
+        value: stock.value,
+      };
+    });
+
+    entry.credit.forEach((stock) => {
+      const item = resolveRef(stock.item);
+
+      if (!accounts[item.name]) {
+        accounts[item.name] = {
+          item: resolveRef(stock.item),
+          entries: { AB: { item, value: 0 } },
+        };
+      }
+
+      const name = buildEntryName(item, index, false, entry);
+      const category = computeSide(item.category, false);
+      const polyItem = { id: name, name, category };
+
+      accounts[item.name].entries[name] = {
+        item: polyItem,
+        value: stock.value,
+      };
     });
   });
 
