@@ -7,6 +7,9 @@ import { PostsPage } from "./pages/postsPage";
 import { askToDiscardChanges, notifySave } from "./util/changesHelper";
 import exportSheet from "./util/exportHelper";
 
+import "@fortawesome/fontawesome-free/js/fontawesome";
+import "@fortawesome/fontawesome-free/js/solid";
+
 var halfmoon = require("halfmoon");
 
 const focusedWindow = remote.BrowserWindow.getFocusedWindow();

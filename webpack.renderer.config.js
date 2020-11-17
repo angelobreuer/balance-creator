@@ -28,6 +28,18 @@ module.exports = {
   },
   plugins: plugins,
   resolve: {
-    extensions: [".js", ".ts", ".jsx", ".tsx", ".css"],
+    extensions: [
+      ".js",
+      ".ts",
+      ".jsx",
+      ".tsx",
+      ".css",
+      ".eot",
+      ".svg",
+      ".ttf",
+      ".woff",
+      ".woff2",
+      ".oft",
+    ],
   },
 };
