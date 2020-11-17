@@ -20,7 +20,8 @@ window.addEventListener("beforeunload", (e) => {
     "Verlassen"
   );
 
-  if (shouldDiscard) {
+  if (!shouldDiscard) {
+    e.returnValue = ""; // prevent window close
     e.preventDefault();
   }
 });
