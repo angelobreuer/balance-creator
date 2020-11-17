@@ -14,6 +14,10 @@ export const BookingsPage: Page = {
     storage.sheet.entries.forEach((x, i) =>
       element.appendChild(createBooking(x, i))
     );
+
+    element.appendChild(
+      createIconButton("Neuer Buchungssatz", "plus", "primary", "#", (x) => {})
+    );
   },
 };
 

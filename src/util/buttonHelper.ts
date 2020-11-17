@@ -39,11 +39,12 @@ export function createIconButton(
   const textElement = document.createElement("span");
   const iconElement = document.createElement("i");
 
-  iconElement.className = "fa fa-" + icon;
   textElement.textContent = text;
+  textElement.className = "ml-5";
+  iconElement.className = "fa fa-" + icon;
 
-  wrapper.appendChild(textElement);
   wrapper.appendChild(iconElement);
+  wrapper.appendChild(textElement);
 
   return createButton(wrapper, style, href, callback);
 }
@@ -53,4 +54,12 @@ export function createDisabledButton(
   style?: string
 ): HTMLDivElement {
   return createButton(content, "muted " + style);
+}
+
+export function createDisabledIconButton(
+  content: string,
+  icon: string,
+  style?: string
+): HTMLDivElement {
+  return createIconButton(content, icon, "muted " + style);
 }

@@ -8,8 +8,8 @@ import showInformation from "../util/errorHelper";
 import { PostsPage } from "./postsPage";
 import createSelect from "../util/selectHelper";
 
-import createButton, {
-  createDisabledButton,
+import {
+  createDisabledIconButton,
   createIconButton,
 } from "../util/buttonHelper";
 
@@ -31,11 +31,20 @@ export const StocksPage: Page = {
 
       if (hasRemainingStocks) {
         element.appendChild(
-          createButton("Neuen Bestand aufnehmen", "primary mt-20", "#modal-0")
+          createIconButton(
+            "Neuen Bestand aufnehmen",
+            "plus",
+            "primary",
+            "#modal-0"
+          )
         );
       } else {
         element.appendChild(
-          createDisabledButton("Neuen Bestand aufnehmen", "float-right mt-20")
+          createDisabledIconButton(
+            "Neuen Bestand aufnehmen",
+            "plus",
+            "float-right"
+          )
         );
       }
     } else {
@@ -43,17 +52,24 @@ export const StocksPage: Page = {
         showInformation(
           "Bevor Bestände angelegt werden können, müssen Sie Posten anlegen.",
           "red",
-          "bug"
+          "bug",
+          15,
+          25
         )
       );
 
       element.appendChild(
-        createDisabledButton("Neuen Bestand aufnehmen", "float-right ml-10")
+        createDisabledIconButton(
+          "Neuen Bestand aufnehmen",
+          "plus",
+          "float-right ml-10"
+        )
       );
 
       element.appendChild(
-        createButton(
+        createIconButton(
           "Zur Postenverwaltung",
+          "external-link-alt",
           "secondary float-right",
           "#",
           () => {
@@ -93,17 +109,23 @@ export const StocksPage: Page = {
 
     const select = createSelect(options);
 
-    const button = createButton("Hinzufügen", "primary mt-10", "#", (x) => {
-      const target = storage.items.find((x) => x.name === select.value);
+    const button = createIconButton(
+      "plus",
+      "Hinzufügen",
+      "primary mt-10",
+      "#",
+      () => {
+        const target = storage.items.find((x) => x.name === select.value);
 
-      storage.sheet.stocks.push({
-        item: createItemRef(target),
-        value: value.valueAsNumber,
-      });
+        storage.sheet.stocks.push({
+          item: createItemRef(target),
+          value: value.valueAsNumber,
+        });
 
-      notifyChange();
-      showPage(StocksPage);
-    });
+        notifyChange();
+        showPage(StocksPage);
+      }
+    );
 
     const elements: HTMLElement[] = [select, valueWrapper, button];
     root.appendChild(createModal(0, "Bestand aufnehmen", elements));

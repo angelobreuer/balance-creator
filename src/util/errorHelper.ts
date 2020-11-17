@@ -1,7 +1,9 @@
 export default function showInformation(
   text: string,
   color: string,
-  iconName: string
+  iconName: string,
+  marginTop: number = 15,
+  marginBottom: number = 0
 ): HTMLDivElement {
   const container = document.createElement("div");
   const content = document.createElement("span");
@@ -9,7 +11,8 @@ export default function showInformation(
 
   container.className = "non-printable";
   container.style.color = color;
-  container.style.paddingTop = "15px";
+  container.style.marginTop = marginTop + "px";
+  container.style.marginBottom = marginBottom + "px";
 
   content.innerText = text;
   content.style.padding = "5px";

@@ -3,7 +3,7 @@ import createModal from "../util/modalHelper";
 import { storage } from "../storage";
 import { showPage } from "./navigator";
 import Page from "./page";
-import createButton from "../util/buttonHelper";
+import createButton, { createIconButton } from "../util/buttonHelper";
 import { notifyChange } from "../util/changesHelper";
 import createSelect, { Option } from "../util/selectHelper";
 import guid from "../util/guidHelper";
@@ -22,7 +22,7 @@ export const PostsPage: Page = {
     storage.items.forEach((x) => element.appendChild(render(x)));
 
     element.appendChild(
-      createButton("Neuen Posten erstellen", "primary", "#modal-0")
+      createIconButton("Neuen Posten erstellen", "plus", "primary", "#modal-0")
     );
   },
   createModals: (element): void => {
