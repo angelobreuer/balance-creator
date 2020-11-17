@@ -1,27 +1,97 @@
 {
   "name": "bilanzenersteller",
+  "productName": "Bilanzenersteller",
   "version": "1.0.0",
   "description": "A tool used to create balance sheets",
-  "main": "main.js",
+  "main": ".webpack/main",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "start": "npm run build && cd dist && electron main.js"
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint --ext .ts ."
   },
-  "author": "Angelo Breuer",
+  "keywords": [],
+  "author": {
+    "name": "Angelo Breuer",
+    "email": "angelobr@outlook.de"
+  },
   "license": "MIT",
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "bilanzenersteller"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin",
+            "linux"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "platforms": [
+            "linux"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ],
+      "plugins": [
+        [
+          "@electron-forge/plugin-webpack",
+          {
+            "mainConfig": "./webpack.main.config.js",
+            "renderer": {
+              "config": "./webpack.renderer.config.js",
+              "entryPoints": [
+                {
+                  "html": "./src/index.html",
+                  "js": "./src/renderer.ts",
+                  "name": "main_window"
+                }
+              ]
+            }
+          }
+        ]
+      ]
+    }
+  },
   "devDependencies": {
-    "@types/halfmoon": "^1.0.0",
-    "copyfiles": "^2.4.0",
-    "electron": "^10.1.5",
-    "electron-packager": "^15.1.0",
-    "i": "^0.3.6",
-    "npm": "^7.0.11"
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "@electron-forge/plugin-webpack": "6.0.0-beta.54",
+    "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/parser": "^4.0.1",
+    "css-loader": "^4.2.1",
+    "electron": "10.1.5",
+    "eslint": "^7.6.0",
+    "eslint-plugin-import": "^2.20.0",
+    "extract-loader": "^5.1.0",
+    "file-loader": "^6.2.0",
+    "fork-ts-checker-webpack-plugin": "^5.0.14",
+    "node-loader": "^1.0.1",
+    "style-loader": "^1.2.1",
+    "ts-loader": "^8.0.2",
+    "typescript": "^4.0.2"
   },
   "dependencies": {
-    "electron-print-dialog": "0.1.0-alpha.1",
     "halfmoon": "^1.1.1",
     "open": "^7.3.0",
-    "print-html-element": "^0.5.1"
+    "print-html-element": "^0.5.1",
+    "@types/halfmoon": "^1.0.0",
+    "electron-squirrel-startup": "^1.0.0"
   }
 }
