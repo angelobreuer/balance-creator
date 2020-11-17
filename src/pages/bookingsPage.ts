@@ -1,9 +1,4 @@
-import {
-  BalanceItem,
-  BalanceSheetEntry,
-  BalanceStock,
-  resolveRef,
-} from "../balanceSheet";
+import { BalanceSheetEntry, BalanceStock, resolveRef } from "../balanceSheet";
 import formatCurrency from "../util/currencyHelper";
 import { storage } from "../storage";
 import Page from "./page";
@@ -141,10 +136,11 @@ class BookingsModal {
     ignoreCheckboxWrapper.className = "custom-checkbox";
 
     ignoreCheckboxLabel.htmlFor = ignoreCheckboxId;
-    ignoreCheckboxLabel.textContent = "Buchungssatz in Berechnung einbeziehen";
+    ignoreCheckboxLabel.textContent =
+      "Buchungssatz in Berechnung nicht einbeziehen";
 
     ignoreCheckbox.value = "";
-    ignoreCheckbox.checked = true;
+    ignoreCheckbox.checked = this.booking.ignore || false;
     ignoreCheckbox.type = "checkbox";
     ignoreCheckbox.className = "mt-10 form-control";
     ignoreCheckbox.id = ignoreCheckboxId;
@@ -152,9 +148,13 @@ class BookingsModal {
     ignoreCheckboxWrapper.appendChild(ignoreCheckbox);
     ignoreCheckboxWrapper.appendChild(ignoreCheckboxLabel);
 
+    ignoreCheckbox.addEventListener("change", () => {
+      this.booking.ignore = ignoreCheckbox.checked;
+    });
+
     const addButton = createIconButton(
-      "Buchungssatz erstellen",
-      "plus",
+      this.isNew ? "Buchungssatz erstellen" : "Buchungssatz aktualisieren",
+      this.isNew ? "plus" : "pen",
       "primary w-full",
       "#",
       () => {
@@ -163,7 +163,10 @@ class BookingsModal {
           this.booking.description = "Keine Beschreibung verfügbar.";
         }
 
-        storage.sheet.entries.push(this.booking);
+        if (this.isNew) {
+          storage.sheet.entries.push(this.booking);
+        }
+
         showPage(BookingsPage);
         notifyChange();
       },
@@ -300,14 +303,15 @@ function createBooking(
   table.className = "card-content";
   actions.className = "card-actions p-5";
 
-  const deleteButton = createIconButton("", "trash", "text-red", "#", (x) => {
+  const deleteButton = createIconButton("", "trash", "text-red", "#", () => {
     storage.sheet.entries.splice(index, 1);
     showPage(BookingsPage);
     notifyChange();
   });
 
-  const editButton = createIconButton("", "pen", "", "#", (x) => {
+  const editButton = createIconButton("", "pen", "", "#modal-0", () => {
     const modalContainer = document.getElementById("modal-container");
+    modalContainer.innerHTML = "";
     modal = new BookingsModal(modalContainer, booking, false);
   });
 
@@ -316,7 +320,7 @@ function createBooking(
     booking.ignore ? "eye-slash" : "eye",
     "",
     "#",
-    (x) => {
+    () => {
       booking.ignore = !booking.ignore;
       notifyChange();
       showPage(BookingsPage);
