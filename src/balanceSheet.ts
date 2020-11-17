@@ -151,8 +151,18 @@ export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
 
     const difference = Math.abs(left - right);
 
-    const category: BalanceItemCategory =
-      left > right ? "passive" : "fixed-assets";
+    var category: BalanceItemCategory;
+    if (left > right) {
+      // book CBA on credit
+      category = "passive";
+    } else if (left == right) {
+      // book on opposite side
+      const isCredit = x.entries["AB"].item.category === "passive";
+      category = isCredit ? "fixed-assets" : "passive";
+    } else {
+      // book CBA on debit
+      category = "fixed-assets";
+    }
 
     const closingBalance = (x.entries["SBK"] = {
       item: { name: "SBK", category: category, id: "sbk" },
