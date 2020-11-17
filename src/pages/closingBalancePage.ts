@@ -4,7 +4,7 @@ import { storage } from "../storage";
 import Page from "./page";
 
 export const ClosingBalancePage: Page = {
-  title: "Abschlussbilanz",
+  title: "Schlussbilanz",
   icon: "align-center",
   class: "balance",
   render: (element): void => {
@@ -15,6 +15,6 @@ export const ClosingBalancePage: Page = {
       value: x.closingBalance.value,
     }));
 
-    element.appendChild(renderBalance("Abschlussbilanz", stocks));
+    element.appendChild(renderBalance("Schlussbilanz", stocks));
   },
 };

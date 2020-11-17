@@ -35,7 +35,9 @@ export const StocksPage: Page = {
             "Neuen Bestand aufnehmen",
             "plus",
             "primary",
-            "#modal-0"
+            "#modal-0",
+            undefined,
+            "right mt-10"
           )
         );
       } else {
@@ -43,7 +45,8 @@ export const StocksPage: Page = {
           createDisabledIconButton(
             "Neuen Bestand aufnehmen",
             "plus",
-            "float-right"
+            "float-right",
+            "right mt-10"
           )
         );
       }
@@ -176,42 +179,8 @@ function render(stock: BalanceStock, index: number) {
       notifyChange();
     }
   );
-
-  const upButton = createIconButton(
-    "",
-    "arrow-up",
-    "text-green float-left",
-    "#",
-    () => moveStock(index, -1)
-  );
-
-  const downButton = createIconButton(
-    "",
-    "arrow-down",
-    "text-green float-left",
-    "#",
-    () => moveStock(index, 1)
-  );
-
-  buttonsColumn.appendChild(upButton);
-  buttonsColumn.appendChild(downButton);
   buttonsColumn.appendChild(deleteButton);
 
   row.appendChild(buttonsColumn);
   return row;
-}
-
-function moveStock(currentIndex: number, direction: number) {
-  const arr = storage.sheet.stocks;
-
-  if (currentIndex + direction < 0 || currentIndex + direction >= arr.length) {
-    return;
-  }
-
-  var element = arr[currentIndex];
-  arr.splice(currentIndex, 1);
-  arr.splice(currentIndex + direction, 0, element);
-
-  showPage(StocksPage);
-  notifyChange();
 }

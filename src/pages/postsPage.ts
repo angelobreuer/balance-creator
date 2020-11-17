@@ -19,7 +19,7 @@ export const PostsPage: Page = {
   icon: "boxes",
   class: "posts",
   render: (element): void => {
-    storage.items.forEach((x) => element.appendChild(render(x)));
+    storage.items.forEach((x, i) => element.appendChild(render(x, i)));
 
     element.appendChild(
       createIconButton("Neuen Posten erstellen", "plus", "primary", "#modal-0")
@@ -72,26 +72,52 @@ function createCategorySelect(target: BalanceItem): HTMLSelectElement {
   return typeInput;
 }
 
-function render(item: BalanceItem): HTMLDivElement {
+function render(item: BalanceItem, index: number): HTMLDivElement {
   const content = document.createElement("div");
   content.className = "card content p-10";
 
   content.appendChild(createNameInput(item));
   content.appendChild(createCategorySelect(item));
 
-  const deleteButton = createButton(
-    "Posten löschen",
+  const actionsWrapper = document.createElement("div");
+  actionsWrapper.className = "text-right";
+
+  const upButton = createIconButton(
+    "",
+    "arrow-up",
+    "text-green",
+    "#",
+    () => movePost(index, -1),
+    "right mt-5 ml-5 d-inline-block"
+  );
+
+  const downButton = createIconButton(
+    "",
+    "arrow-down",
+    "text-green",
+    "#",
+    () => movePost(index, 1),
+    "right mt-5 ml-5 d-inline-block"
+  );
+
+  const deleteButton = createIconButton(
+    "",
+    "trash",
     "danger",
-    undefined,
+    "#",
     () => {
       deletePost(item);
       notifyChange();
       showPage(PostsPage);
-    }
+    },
+    "right mt-5 ml-5 d-inline-block"
   );
 
-  deleteButton.classList.add("mt-5");
-  content.appendChild(deleteButton);
+  actionsWrapper.appendChild(deleteButton);
+  actionsWrapper.appendChild(downButton);
+  actionsWrapper.appendChild(upButton);
+
+  content.appendChild(actionsWrapper);
 
   return content;
 }
@@ -156,3 +182,18 @@ const options: Option[] = [
     value: "passive",
   },
 ];
+
+function movePost(currentIndex: number, direction: number) {
+  const arr = storage.items;
+
+  if (currentIndex + direction < 0 || currentIndex + direction >= arr.length) {
+    return;
+  }
+
+  var element = arr[currentIndex];
+  arr.splice(currentIndex, 1);
+  arr.splice(currentIndex + direction, 0, element);
+
+  showPage(PostsPage);
+  notifyChange();
+}

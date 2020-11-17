@@ -1,14 +1,20 @@
 import NameBalancePair from "./balancePair";
-import { ClosedBalanceAccount, BalanceItem, resolveRef } from "./balanceSheet";
 import { verifyAccount } from "./util/tAccountHelper";
+
+import {
+  BalanceItem,
+  createClosingBalanceAccount,
+  ClosedBalanceAccount,
+} from "./balanceSheet";
 
 const accountantNose: string =
   "url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMjUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+LnN0MHtmaWxsOm5vbmU7c3Ryb2tlOiNjYWNhY2E7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjEwO308L3N0eWxlPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNOTksMC41SDY5Yy0xNy4zMyw4LjMzLTMwLjY3LDE2LjY3LTQ3LDI0Ii8+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Im0wLjUgMjQuNWgyMSIvPgo8L3N2Zz4K')";
 
 export function renderSheet(accounts: ClosedBalanceAccount[]): HTMLElement {
   const container = document.createElement("div");
+  const list = [...accounts, createClosingBalanceAccount(accounts)];
 
-  accounts.forEach((x) => {
+  list.forEach((x) => {
     const entries = Object.entries(x.entries);
 
     const left: NameBalancePair[] = entries

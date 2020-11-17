@@ -75,18 +75,48 @@ function buildEntryName(
   return `${index + 1})`;
 }
 
-export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
-  const accounts: { [itemName: string]: BalanceAccount } = {};
+export function createClosingBalanceAccount(
+  accounts: ClosedBalanceAccount[]
+): BalanceAccount {
+  const account: BalanceAccount = {
+    entries: {},
+    item: { category: "fixed-assets", id: "CBA", name: "Schlussbilanzkonto" },
+  };
 
-  // start with adding the stocks to the accounts
-  sheet.stocks.forEach((stock) => {
-    const item = resolveRef(stock.item);
-
-    accounts[item.name] = {
-      entries: { AB: { item, value: stock.value } },
-      item: item,
+  accounts.forEach((x) => {
+    account.entries[x.item.name] = {
+      item: x.item,
+      value: x.closingBalance.value,
     };
   });
+
+  return account;
+}
+
+export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
+  const accounts: {
+    [itemName: string]: {
+      item: BalanceItem;
+      entries: { [key: string]: BalanceStock<BalanceItem> } & {
+        AB: BalanceStock<BalanceItem>;
+      };
+    };
+  } = {};
+
+  // start with adding the items to the accounts
+  storage.items.forEach(
+    (item) =>
+      (accounts[item.name] = {
+        entries: { AB: { item, value: 0 } },
+        item: item,
+      })
+  );
+
+  // start with adding the stocks to the accounts
+  sheet.stocks.forEach(
+    (stock) =>
+      (accounts[resolveRef(stock.item).name].entries.AB.value += stock.value)
+  );
 
   // add entries
   sheet.entries.forEach((entry, index) => {
@@ -96,14 +126,6 @@ export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
 
     entry.debit.forEach((stock) => {
       const item = resolveRef(stock.item);
-
-      if (!accounts[item.name]) {
-        accounts[item.name] = {
-          item: resolveRef(stock.item),
-          entries: { AB: { item, value: 0 } },
-        };
-      }
-
       const name = buildEntryName(item, index, true, entry);
       const category = computeSide(item.category, true);
       const polyItem = { id: name, name, category };
@@ -116,14 +138,6 @@ export function createAccounts(sheet: BalanceSheet): ClosedBalanceAccount[] {
 
     entry.credit.forEach((stock) => {
       const item = resolveRef(stock.item);
-
-      if (!accounts[item.name]) {
-        accounts[item.name] = {
-          item: resolveRef(stock.item),
-          entries: { AB: { item, value: 0 } },
-        };
-      }
-
       const name = buildEntryName(item, index, false, entry);
       const category = computeSide(item.category, false);
       const polyItem = { id: name, name, category };

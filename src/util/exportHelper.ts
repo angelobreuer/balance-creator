@@ -39,7 +39,7 @@ export default function exportSheet() {
     value: x.closingBalance.value,
   }));
 
-  balanceElement.appendChild(renderBalance("Abschlussbilanz", stocks));
+  balanceElement.appendChild(renderBalance("Schlussbilanz", stocks));
 
   body.appendChild(accountsElement);
   body.appendChild(balanceElement);
