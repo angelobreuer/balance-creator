@@ -66,5 +66,12 @@ export function createDisabledIconButton(
   style?: string,
   align: string = "right"
 ): HTMLDivElement {
-  return createIconButton(content, icon, "muted " + style, align);
+  return createIconButton(
+    content,
+    icon,
+    "muted " + style,
+    undefined,
+    undefined,
+    align
+  );
 }
