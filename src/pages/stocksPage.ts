@@ -2,7 +2,13 @@ import { notifyChange } from "../util/changesHelper";
 import { storage } from "../storage";
 import { showPage } from "./navigator";
 import Page from "./page";
-import { BalanceStock, createItemRef, resolveRef } from "../balanceSheet";
+import {
+  BalanceItem,
+  BalanceStock,
+  createItemRef,
+  isInventoryItem,
+  resolveRef,
+} from "../balanceSheet";
 import createModal from "../util/modalHelper";
 import showInformation from "../util/errorHelper";
 import { PostsPage } from "./postsPage";
@@ -13,19 +19,23 @@ import {
   createIconButton,
 } from "../util/buttonHelper";
 
+function getAvailableItems(): BalanceItem[] {
+  return storage.items.filter((x) => !isInventoryItem(x.category));
+}
+
 export const StocksPage: Page = {
   title: "Bestände",
   icon: "receipt",
   class: "stocks",
   render: (element): void => {
-    const hasItems = storage.items.length > 0;
+    const hasItems = getAvailableItems().length > 0;
 
     if (hasItems) {
       const table = document.createElement("table");
       element.appendChild(table);
       storage.sheet.stocks.forEach((x, i) => table.appendChild(render(x, i)));
 
-      const hasRemainingStocks = storage.items.some(
+      const hasRemainingStocks = getAvailableItems().some(
         (x) => !storage.sheet.stocks.some((j) => resolveRef(j.item) === x)
       );
 
@@ -83,7 +93,7 @@ export const StocksPage: Page = {
     }
   },
   createModals(root) {
-    const remainingItems = storage.items.filter(
+    const remainingItems = getAvailableItems().filter(
       (x) => !storage.sheet.stocks.some((j) => resolveRef(j.item) === x)
     );
 
@@ -118,7 +128,7 @@ export const StocksPage: Page = {
       "primary mt-10",
       "#",
       () => {
-        const target = storage.items.find((x) => x.name === select.value);
+        const target = getAvailableItems().find((x) => x.name === select.value);
 
         storage.sheet.stocks.push({
           item: createItemRef(target),

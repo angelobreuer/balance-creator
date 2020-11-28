@@ -8,11 +8,11 @@ export const ClosingBalancePage: Page = {
   icon: "align-center",
   class: "balance",
   render: (element): void => {
-    const accounts = createAccounts(storage.sheet);
+    const accounts = createAccounts(storage.sheet).filter((x) => x.entries.SBK);
 
     const stocks = accounts.map((x) => ({
       item: x.item,
-      value: x.closingBalance.value,
+      value: x.entries["SBK"].value,
     }));
 
     element.appendChild(renderBalance("Schlussbilanz", stocks));

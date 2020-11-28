@@ -168,6 +168,8 @@ function createNameInput(target: BalanceItem): HTMLInputElement {
   return nameInput;
 }
 
+// TODO: when changing the type of a post, then the stocks should be invalidated
+
 const options: Option[] = [
   {
     name: "Aktiv (Anlagevermögen)",
@@ -180,6 +182,14 @@ const options: Option[] = [
   {
     name: "Passiv",
     value: "passive",
+  },
+  {
+    name: "Aufwand",
+    value: "expense",
+  },
+  {
+    name: "Ertrag",
+    value: "income",
   },
 ];
 

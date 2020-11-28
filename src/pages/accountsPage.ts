@@ -1,14 +1,14 @@
-import { renderSheet } from "../accountRenderer";
+import { renderAccounts } from "../accountRenderer";
 import { createAccounts } from "../balanceSheet";
 import { storage } from "../storage";
 import Page from "./page";
 
 export const AccountsPage: Page = {
-  title: "Bilanzkonten",
+  title: "Konten",
   icon: "stream",
   class: "accounts",
   render: (element): void => {
     const accounts = createAccounts(storage.sheet);
-    element.appendChild(renderSheet(accounts));
+    element.appendChild(renderAccounts(accounts));
   },
 };

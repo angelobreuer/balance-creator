@@ -1,11 +1,11 @@
 import { readFileSync, mkdir, writeFile } from "original-fs";
-import { renderClosingBalanceAccount, renderSheet } from "../accountRenderer";
 import { BalanceSheetEntry, createAccounts, resolveRef } from "../balanceSheet";
 import { renderBalance } from "../balanceSheetRenderer";
 import { storage } from "../storage";
 import { resolve } from "path";
 import open = require("open");
 import formatCurrency from "./currencyHelper";
+import { renderAccounts } from "../accountRenderer";
 
 function addStylesheet(head: HTMLHeadElement, path: string) {
   const style = document.createElement("style");
@@ -32,7 +32,6 @@ export const defaultExportOptions: ExportOptions = {
   exportAccounts: true,
   exportClosingBalance: true,
   exportBookings: true,
-  exportClosingBalanceAccount: false,
   exportStocks: false,
   exportPosts: false,
 };
@@ -41,26 +40,18 @@ function exportAccounts(): HTMLElement {
   const accounts = createAccounts(storage.sheet);
   const accountsElement = document.createElement("div");
   accountsElement.className = "accounts";
-  accountsElement.appendChild(renderSheet(accounts, false));
-  return accountsElement;
-}
-
-function exportClosingBalanceAccount(): HTMLElement {
-  const accounts = createAccounts(storage.sheet);
-  const accountsElement = document.createElement("div");
-  accountsElement.className = "accounts";
-  accountsElement.appendChild(renderClosingBalanceAccount(accounts));
+  accountsElement.appendChild(renderAccounts(accounts));
   return accountsElement;
 }
 
 function exportClosingBalance(): HTMLElement {
-  const accounts = createAccounts(storage.sheet);
+  const accounts = createAccounts(storage.sheet).filter((x) => x.entries.SBK);
   const balanceElement = document.createElement("div");
   balanceElement.className = "balance";
 
   const stocks = accounts.map((x) => ({
     item: x.item,
-    value: x.closingBalance.value,
+    value: x.entries["SBK"].value,
   }));
 
   balanceElement.appendChild(renderBalance("Schlussbilanz", stocks));
@@ -253,10 +244,6 @@ export function generateHTML(options: ExportOptions): string {
 
   if (options.exportBookings) {
     wrapper.appendChild(exportBookings());
-  }
-
-  if (options.exportClosingBalanceAccount) {
-    wrapper.appendChild(exportClosingBalanceAccount());
   }
 
   if (options.exportClosingBalance) {
