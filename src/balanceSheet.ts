@@ -208,7 +208,7 @@ function createProfitAndLossAccount(
       total++;
 
       account.entries[x.item.name] = {
-        item: x.item,
+        item: { ...x.item, category: getCounterSide(x.item.category) },
         value: x.profitAndLoss.value,
       };
 
@@ -226,8 +226,8 @@ function createProfitAndLossAccount(
   }
 
   const isProfit = profit > loss;
-  const itemName = isProfit ? "Gewinn" : "Verlust";
-  const category: BalanceItemCategory = isProfit ? "income" : "expense";
+  const itemName = isProfit ? "Verlust" : "Gewinn";
+  const category: BalanceItemCategory = isProfit ? "expense" : "income";
 
   account.entries[itemName] = {
     item: { category, id: category, name: category },
@@ -238,10 +238,6 @@ function createProfitAndLossAccount(
 }
 
 export function closeAccount(item: AccountTableEntry): ClosedBalanceAccount {
-  const inventoryItem = isInventoryItem(item.item.category);
-  const debitSide = inventoryItem ? "income" : "fixed-assets";
-  const creditSide = inventoryItem ? "expense" : "passive";
-
   const entries: { [key: string]: BalanceStock<BalanceItem> } = {};
 
   Object.entries(item.entries)
@@ -249,32 +245,28 @@ export function closeAccount(item: AccountTableEntry): ClosedBalanceAccount {
     .map((x) => (entries[x[0]] = x[1]));
 
   const account: ClosedBalanceAccount = { item: item.item, entries };
+  const closeAccountName = isInventoryItem(item.item.category) ? "GuV" : "SBK";
 
-  var category: BalanceItemCategory;
-  if (item.debit > item.credit) {
-    // book CBA on credit
-    category = creditSide;
-  } else if (item.debit == item.credit) {
-    // book on opposite side
-    category = item.item.category == creditSide ? debitSide : creditSide;
-  } else {
-    // book CBA on debit
-    category = debitSide;
-  }
-
-  const closeAccountName = inventoryItem ? "GuV" : "SBK";
+  const category = isInventoryItem(item.item.category)
+    ? item.item.category
+    : getCounterSide(item.item.category);
 
   const closeAccount = {
     item: {
       name: closeAccountName,
-      category: category,
+      category,
       id: closeAccountName.toLowerCase(),
     },
     value: Math.abs(item.credit - item.debit),
   };
 
   entries[closeAccountName] = closeAccount;
-  account[inventoryItem ? "profitAndLoss" : "closingBalance"] = closeAccount;
+
+  const accountName = isInventoryItem(item.item.category)
+    ? "profitAndLoss"
+    : "closingBalance";
+
+  account[accountName] = closeAccount;
 
   return account;
 }
@@ -308,14 +300,14 @@ function bookProfitsAndLosses(accounts: AccountTable) {
 
   if (profit > loss) {
     account.entries["Gewinn"] = {
-      item: { category: "fixed-assets", id: "income", name: "Gewinn" },
+      item: { category: "passive", id: "income", name: "Gewinn" },
       value: profit - loss,
     };
 
-    account.credit += loss - profit;
+    account.credit += profit - loss;
   } else {
     account.entries["Verlust"] = {
-      item: { category: "passive", id: "expense", name: "Verlust" },
+      item: { category: "fixed-assets", id: "expense", name: "Verlust" },
       value: loss - profit,
     };
 
