@@ -1,4 +1,4 @@
-import { readFileSync, mkdir, writeFile } from "original-fs";
+import { readFileSync, mkdir, writeFile, stat, existsSync } from "original-fs";
 import { BalanceSheetEntry, createAccounts, resolveRef } from "../balanceSheet";
 import { renderBalance } from "../balanceSheetRenderer";
 import { storage } from "../storage";
@@ -6,14 +6,24 @@ import { resolve } from "path";
 import open = require("open");
 import formatCurrency from "./currencyHelper";
 import { renderAccounts } from "../accountRenderer";
+import { promisify } from "util";
 
-function addStylesheet(head: HTMLHeadElement, path: string) {
+const electron = require("electron");
+const BrowserWindow = electron.remote.BrowserWindow;
+
+var mkdirAsync = promisify(mkdir);
+var writeFileAsync = promisify(writeFile);
+
+import halfmoonCss from "../css/halfmoon.min.css";
+import mainCss from "../css/main.css";
+
+async function addStylesheet(
+  head: HTMLHeadElement,
+  path: string
+): Promise<void> {
   const style = document.createElement("style");
-
-  style.innerHTML = readFileSync(resolve(__dirname, path), {
-    encoding: "utf8",
-  });
-
+  const response = await fetch(path);
+  style.innerHTML = await response.text();
   head.appendChild(style);
 }
 
@@ -25,6 +35,7 @@ export interface ExportOptions {
   exportBookings?: boolean;
   exportStocks?: boolean;
   exportPosts?: boolean;
+  openPrintDialog?: boolean;
 }
 
 export const defaultExportOptions: ExportOptions = {
@@ -34,6 +45,7 @@ export const defaultExportOptions: ExportOptions = {
   exportBookings: true,
   exportStocks: false,
   exportPosts: false,
+  openPrintDialog: true,
 };
 
 function exportAccounts(): HTMLElement {
@@ -212,7 +224,7 @@ export function exportStocks(): HTMLElement {
   return element;
 }
 
-export function generateHTML(options: ExportOptions): string {
+export async function generateHTML(options: ExportOptions): Promise<string> {
   const webRoot = document.createElement("html");
   const body = document.createElement("body");
   const head = document.createElement("head");
@@ -223,8 +235,12 @@ export function generateHTML(options: ExportOptions): string {
 
   body.appendChild(wrapper);
 
-  addStylesheet(head, "../css/main.css");
-  addStylesheet(head, "../css/halfmoon.min.css");
+  if (options.openPrintDialog) {
+    body.setAttribute("onload", "window.print()");
+  }
+
+  await addStylesheet(head, halfmoonCss);
+  await addStylesheet(head, mainCss);
 
   if (options.exportPosts) {
     wrapper.appendChild(exportPosts());
@@ -256,13 +272,21 @@ export function generateHTML(options: ExportOptions): string {
   return webRoot.outerHTML;
 }
 
-export default function exportHTML(options: ExportOptions) {
-  mkdir("exports/", () => {
-    const id = Math.random().toString(36).substring(7);
-    const filename = resolve("exports/" + id + ".html");
+export default async function exportHTML(options: ExportOptions) {
+  const folder = resolve(
+    process.env.APPDATA || process.env.LOCAL_APPDATA || process.env.HOME,
+    "Bilanzenersteller",
+    "exports"
+  );
 
-    writeFile(filename, generateHTML(options), () => {
-      open(filename);
-    });
-  });
+  if (!existsSync(folder)) {
+    await mkdirAsync(folder);
+  }
+
+  const id = Math.random().toString(36).substring(7);
+  const filename = resolve(folder, id + ".html");
+  const html = await generateHTML(options);
+
+  await writeFileAsync(filename, html);
+  await open(filename);
 }

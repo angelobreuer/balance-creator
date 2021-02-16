@@ -9,6 +9,9 @@ import exportHTML, { defaultExportOptions } from "./util/exportHelper";
 import "@fortawesome/fontawesome-free/js/fontawesome";
 import "@fortawesome/fontawesome-free/js/solid";
 
+import halfmoonCss from "./css/halfmoon.min.css";
+import mainCss from "./css/main.css";
+
 var halfmoon = require("halfmoon");
 
 const focusedWindow = remote.BrowserWindow.getFocusedWindow();
@@ -25,6 +28,16 @@ window.addEventListener("beforeunload", (e) => {
     e.preventDefault();
   }
 });
+
+function addStylesheet(path: string) {
+  const elem = document.createElement("link");
+  elem.rel = "stylesheet";
+  elem.href = path;
+  document.head.appendChild(elem);
+}
+
+addStylesheet(halfmoonCss);
+addStylesheet(mainCss);
 
 halfmoon.onDOMContentLoaded();
 pages.forEach(addSidebarPage);

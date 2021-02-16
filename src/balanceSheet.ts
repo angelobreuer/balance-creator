@@ -155,7 +155,6 @@ function bookAccounts(accounts: AccountTable, sheet: BalanceSheet) {
       const category = computeSide(item.category, x.debit);
       const polyItem = { id: name, name, category };
       const account = accounts[item.name];
-      console.log(item.name);
 
       account.entries[name] = {
         item: polyItem,

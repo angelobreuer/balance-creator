@@ -4,6 +4,15 @@
   }
 }
 
+.bookings tr {
+  display: flex;
+}
+
+.bookings td:first-child,
+.bookings td:last-child {
+  flex: 1;
+}
+
 .bookings table tr:not(:first-child) td.booking-info {
   border-top: 1px solid #cacaca20;
 }
@@ -21,6 +30,18 @@
 .card:hover .card-actions {
   background: #00000010;
   opacity: 1;
+}
+
+.balance-line {
+  border-right: 2px solid #cacaca;
+}
+
+.b-cell:nth-child(2) {
+  border-left: 2px solid #cacaca;
+}
+
+.b-cell {
+  width: 50%;
 }
 
 .sticky-dark-toggler {
@@ -58,13 +79,6 @@ table {
   border-collapse: collapse;
 }
 
-.balance-column {
-  width: 6px;
-  padding-left: 2px;
-  padding-right: 5px;
-  margin: 0;
-}
-
 .bookings table tr {
   color: #aaaaaa;
 }
@@ -74,6 +88,10 @@ table {
   margin-bottom: 10px;
 }
 
+.b-col {
+  padding-left: 4px;
+}
+
 .accounts table tr:last-child,
 .accounts table tr:first-child,
 .balance table tr:last-child,
@@ -81,34 +99,12 @@ table {
   border-top: 2px solid #cacaca;
 }
 
-table td.balance-line {
-  border-right: 2px solid #cacaca;
-}
-
 table td {
   padding: 4px 9px;
 }
 
 .sum-underline {
-  position: relative;
-}
-
-.sum-underline::after,
-.sum-underline::before {
-  content: " ";
-  position: absolute;
-  z-index: -1;
-  left: 0;
-  right: 0;
-  border-bottom: 1px solid #cacaca;
-}
-
-.sum-underline::after {
-  bottom: 5px;
-}
-
-.sum-underline::before {
-  bottom: 3px;
+  border-bottom: 3px double #cacaca;
 }
 
 .bookings table {

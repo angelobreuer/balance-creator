@@ -1,16 +1,7 @@
-import {
-  ClosedBalanceAccount,
-  BalanceItem,
-  BalanceItemCategory,
-  BalanceStock,
-  createItemRef,
-  resolveRef,
-} from "./balanceSheet";
+import { BalanceItem, BalanceItemCategory, BalanceStock } from "./balanceSheet";
+import accountantNose from "./util/accountantNose";
 import formatCurrency from "./util/currencyHelper";
 import { verifyAccount } from "./util/tAccountHelper";
-
-const accountantNose: string =
-  "url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMjUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+LnN0MHtmaWxsOm5vbmU7c3Ryb2tlOiNjYWNhY2E7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjEwO308L3N0eWxlPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNOTksMC41SDY5Yy0xNy4zMyw4LjMzLTMwLjY3LDE2LjY3LTQ3LDI0Ii8+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Im0wLjUgMjQuNWgyMSIvPgo8L3N2Zz4K')";
 
 export function renderBalance(
   title: string,
@@ -164,15 +155,15 @@ function populateEmptyRow(
   showSeparator: boolean
 ) {
   const cell = document.createElement("td");
-  const image = document.createElement("div");
+  const image = document.createElement("img");
 
   cell.colSpan = 2;
   cell.rowSpan = rows;
 
-  image.style.backgroundImage = accountantNose;
   image.style.width = "100%";
   image.style.height = (30 * rows).toString() + "px";
   image.style.display = "block";
+  image.src = accountantNose;
 
   if (showSeparator) {
     cell.className = "balance-line";
@@ -188,24 +179,28 @@ function populateEntrySide(
   showSeparator: boolean
 ) {
   const ordinal = document.createElement("td");
-  const value = document.createElement("td");
+  const valueColumn = document.createElement("td");
+  const value = document.createElement("span");
 
   value.innerText = formatCurrency(info.value);
   ordinal.innerText = info.item.name;
 
   row.className = "balance-row";
-  value.className = "balance-column text-right";
+  value.className = "text-right d-inline-block w-full";
+  valueColumn.className = "balance-column";
 
   if (showSeparator) {
-    value.className += " balance-line";
+    valueColumn.className += " balance-line";
   }
 
   if (info.item.name === sumItem.name) {
     value.className += " sum-underline";
   }
 
+  valueColumn.appendChild(value);
+
   row.appendChild(ordinal);
-  row.appendChild(value);
+  row.appendChild(valueColumn);
 }
 
 export function createHeader(account: string): HTMLElement {

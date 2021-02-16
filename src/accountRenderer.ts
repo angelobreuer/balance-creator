@@ -6,9 +6,7 @@ import {
   isBookedOnDebit,
   isBookedOnCredit,
 } from "./balanceSheet";
-
-const accountantNose: string =
-  "url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxMDAgMjUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+LnN0MHtmaWxsOm5vbmU7c3Ryb2tlOiNjYWNhY2E7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLWxpbmVqb2luOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjEwO308L3N0eWxlPgo8cGF0aCBjbGFzcz0ic3QwIiBkPSJNOTksMC41SDY5Yy0xNy4zMyw4LjMzLTMwLjY3LDE2LjY3LTQ3LDI0Ii8+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Im0wLjUgMjQuNWgyMSIvPgo8L3N2Zz4K')";
+import accountantNose from "./util/accountantNose";
 
 export function renderAccounts(accounts: BalanceAccount[]): HTMLElement {
   const container = document.createElement("div");
@@ -45,13 +43,13 @@ function createEntry(
     const row = document.createElement("tr");
 
     if (index < left.length) {
-      populateEntrySide(row, left[index], true);
+      populateEntrySide(row, left[index]);
     } else if (index == left.length) {
       populateEmptyRow(row, count - index, true);
     }
 
     if (index < right.length) {
-      populateEntrySide(row, right[index], false);
+      populateEntrySide(row, right[index]);
     } else if (index == right.length) {
       populateEmptyRow(row, count - index, false);
     }
@@ -87,8 +85,8 @@ function closeTable(
     rightSum: right.map((x) => x.balance).reduce(reducer, 0),
   };
 
-  populateEntrySide(row, { name: sumItem.name, balance: data.leftSum }, true);
-  populateEntrySide(row, { name: sumItem.name, balance: data.rightSum }, false);
+  populateEntrySide(row, { name: sumItem.name, balance: data.leftSum });
+  populateEntrySide(row, { name: sumItem.name, balance: data.rightSum });
   table.appendChild(row);
 
   return data;
@@ -100,15 +98,15 @@ function populateEmptyRow(
   showSeparator: boolean
 ) {
   const cell = document.createElement("td");
-  const image = document.createElement("div");
+  const image = document.createElement("img");
 
-  cell.colSpan = 5;
   cell.rowSpan = rows;
+  cell.className = "b-cell";
 
-  image.style.backgroundImage = accountantNose;
   image.style.width = "100%";
   image.style.height = (30 * rows).toString() + "px";
   image.style.display = "block";
+  image.src = accountantNose;
 
   if (showSeparator) {
     cell.className = "balance-line";
@@ -118,16 +116,14 @@ function populateEmptyRow(
   row.appendChild(cell);
 }
 
-function populateEntrySide(
-  row: HTMLTableRowElement,
-  info: NameBalancePair,
-  showSeparator: boolean
-) {
-  const ordinal = document.createElement("td");
-  const space = document.createElement("td");
-  const valuePart3 = document.createElement("td");
-  const valuePart2 = document.createElement("td");
-  const valuePart1 = document.createElement("td");
+function populateEntrySide(row: HTMLTableRowElement, info: NameBalancePair) {
+  const cell = document.createElement("td");
+  const innerCell = document.createElement("div");
+  const ordinal = document.createElement("div");
+  const values = document.createElement("div");
+  const valuePart3 = document.createElement("div");
+  const valuePart2 = document.createElement("div");
+  const valuePart1 = document.createElement("div");
 
   const fractionPart = ((info.balance % 1) * 100).toFixed(0).padStart(2, "0");
   const integerPart = info.balance.toFixed(0);
@@ -140,29 +136,28 @@ function populateEntrySide(
   valuePart3.innerText = fractionPart;
   ordinal.innerText = info.name;
 
+  cell.className = "b-cell";
   row.className = "balance-row";
-  space.className = "balance-spacer";
+  innerCell.className = "d-flex";
 
-  valuePart3.className = "balance-column text-right";
-  valuePart2.className = "balance-column font-weight-medium text-right";
-  valuePart1.className = "balance-column font-weight-medium text-right";
-
-  if (showSeparator) {
-    valuePart3.className += " balance-line";
-  }
+  ordinal.className = "flex-grow-1 d-inline-block";
+  valuePart3.className = "b-col text-right d-inline-block";
+  valuePart2.className = "b-col font-weight-medium text-right d-inline-block";
+  valuePart1.className = "b-col font-weight-medium text-right d-inline-block";
 
   if (info.name === sumItem.name) {
-    valuePart1.className += " sum-underline";
-    valuePart2.className += " sum-underline";
-    valuePart3.className += " sum-underline";
+    values.className = "sum-underline";
   }
 
-  row.appendChild(ordinal);
-  row.appendChild(space);
+  cell.appendChild(innerCell);
+  row.appendChild(cell);
 
-  row.appendChild(valuePart1);
-  row.appendChild(valuePart2);
-  row.appendChild(valuePart3);
+  values.appendChild(valuePart1);
+  values.appendChild(valuePart2);
+  values.appendChild(valuePart3);
+
+  innerCell.appendChild(ordinal);
+  innerCell.appendChild(values);
 }
 
 export function createHeader(account: string): HTMLElement {

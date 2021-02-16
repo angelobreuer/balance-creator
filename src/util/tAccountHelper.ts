@@ -2,6 +2,28 @@ import NameBalancePair from "../balancePair";
 import formatCurrency from "./currencyHelper";
 import showInformation from "./errorHelper";
 
+export function verifyBooking(
+  container: HTMLElement,
+  leftSum: number,
+  rightSum: number
+) {
+  if (leftSum !== rightSum) {
+    container.appendChild(
+      showInformation(
+        `Die Summen sind nicht wertegleich (${formatCurrency(
+          leftSum
+        )} ≠ ${formatCurrency(rightSum)}).`,
+        "red",
+        "bug"
+      )
+    );
+  } else {
+    container.appendChild(
+      showInformation("Keine Fehler gefunden.", "green", "check")
+    );
+  }
+}
+
 export function verifyAccount(
   container: HTMLElement,
   leftSum: number,

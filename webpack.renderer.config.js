@@ -4,25 +4,20 @@ const plugins = require("./webpack.plugins");
 rules.push({
   test: /\.css$/,
   use: [
-    {
-      loader: "file-loader",
-      options: {
-        name: "[name].css",
-        context: "./src/css/",
-        outputPath: "css/",
-        publicPath: "../",
-      },
-    },
-    { loader: "extract-loader" },
-    { loader: "css-loader" },
+    "file-loader",
+    "extract-loader",
+    "css-loader",
   ],
 });
 
-module.exports = {
-  entry: {
-    halfmoonCss: "./src/css/halfmoon.min.css",
-    mainCss: "./src/css/main.css",
+rules.push({
+  test: /\.svg/,
+  use: {
+    loader: "file-loader"
   },
+});
+
+module.exports = {
   module: {
     rules,
   },
@@ -40,6 +35,7 @@ module.exports = {
       ".woff",
       ".woff2",
       ".oft",
+      ".svg",
     ],
   },
 };

@@ -15,7 +15,7 @@ import {
   createIconButton,
 } from "../util/buttonHelper";
 
-var modal: BookingsModal;
+import { verifyBooking } from "../util/tAccountHelper";
 
 export const BookingsPage: Page = {
   title: "Buchungssätze",
@@ -61,7 +61,7 @@ export const BookingsPage: Page = {
     }
   },
   createModals(element) {
-    modal = new BookingsModal(
+    new BookingsModal(
       element,
       {
         credit: [
@@ -312,7 +312,7 @@ function createBooking(
   const editButton = createIconButton("", "pen", "", "#modal-0", () => {
     const modalContainer = document.getElementById("modal-container");
     modalContainer.innerHTML = "";
-    modal = new BookingsModal(modalContainer, booking, false);
+    new BookingsModal(modalContainer, booking, false);
   });
 
   const hideButton = createIconButton(
@@ -388,6 +388,11 @@ function createBooking(
   container.appendChild(actions);
   container.appendChild(description);
   container.appendChild(table);
+
+  const sum1 = booking.credit.map((x) => x.value).reduce((a, b) => a + b, 0);
+  const sum2 = booking.debit.map((x) => x.value).reduce((a, b) => a + b, 0);
+
+  verifyBooking(container, sum1, sum2);
 
   return container;
 }
