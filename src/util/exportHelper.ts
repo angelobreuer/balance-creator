@@ -8,9 +8,6 @@ import formatCurrency from "./currencyHelper";
 import { renderAccounts } from "../accountRenderer";
 import { promisify } from "util";
 
-const electron = require("electron");
-const BrowserWindow = electron.remote.BrowserWindow;
-
 var mkdirAsync = promisify(mkdir);
 var writeFileAsync = promisify(writeFile);
 
@@ -28,7 +25,6 @@ async function addStylesheet(
 }
 
 export interface ExportOptions {
-  exportClosingBalanceAccount?: boolean;
   exportOpeningBalance?: boolean;
   exportClosingBalance?: boolean;
   exportAccounts?: boolean;

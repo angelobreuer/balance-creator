@@ -7,4 +7,11 @@ module.exports = [{
       transpileOnly: true,
     },
   },
+}, {
+  test: /\.css$/,
+  use: [
+    "file-loader",
+    "extract-loader",
+    "css-loader",
+  ],
 }];

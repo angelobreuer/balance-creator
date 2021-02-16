@@ -22,14 +22,15 @@ export const ExportPage: Page = {
     );
   },
 };
+
 const options = [
   bindOption("Eröffnungsbilanz exportieren", "exportOpeningBalance"),
   bindOption("Konten exportieren", "exportAccounts"),
   bindOption("Schlussbilanz exportieren", "exportClosingBalance"),
   bindOption("Buchungssätze exportieren", "exportBookings"),
-  bindOption("Schlussbilanzkonto exportieren", "exportClosingBalanceAccount"),
   bindOption("Bestände exportieren", "exportStocks"),
   bindOption("Posten exportieren", "exportPosts"),
+  bindOption("Druckdialog automatisch öffnen", "openPrintDialog"),
 ];
 
 function bindOption(name: string, key: string): HTMLDivElement {
